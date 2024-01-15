@@ -3,8 +3,9 @@ const authController = require("../controllers/auth.controller");
 const usersController = require("../controllers/users.controller");
 const ridersController = require("../controllers/riders.controller");
 const commentsController = require("../controllers/comments.controller");
+const likesController = require("../controllers/like.controller");
 const authMiddleware = require("../middlewares/auth.middlewares");
-const upload = require("../config/storage.config");
+const { multer, multerConfig } = require("../config/storage.config");
 const passport = require('passport');
 
 const GOOGLE_SCOPES = [
@@ -30,22 +31,31 @@ router.get('/auth/google/callback', authMiddleware.isNotAuthenticated, authContr
 
 // users
 router.get("/profile", authMiddleware.isAuthenticated, usersController.profile);
+router.get("/profile/:id/edit", authMiddleware.isAuthenticated, usersController.profileEdit);
+router.post("/profile/:id/edit", authMiddleware.isAuthenticated, multerConfig.fields([{ name: 'picture', maxCount: 1 }]), usersController.doProfileEdit);
 
 // riders
 router.get("/riders", ridersController.list);
+router.get("/riders/create", authMiddleware.isAuthenticated, authMiddleware.isAdmin, ridersController.create);
+router.post("/riders/create", authMiddleware.isAuthenticated, authMiddleware.isAdmin, multerConfig.fields([{ name: 'image', maxCount: 1 }, { name: 'gallery', maxCount: 5 }]), ridersController.doCreate);
+router.get("/riders/:id", ridersController.details);
+router.get("/riders/:id/delete", authMiddleware.isAdmin, ridersController.delete);
+router.get("/riders/:id/update", authMiddleware.isAdmin, ridersController.update);
+router.post("/riders/:id/update", authMiddleware.isAdmin, multerConfig.fields([{ name: 'image', maxCount: 1 }, { name: 'gallery', maxCount: 5 }]), ridersController.doUpdate);
 
-
-router.get("/riders/create", /*authMiddleware.isAuthenticated,*/ ridersController.create);
-router.post("/riders/create", /*authMiddleware.isAuthenticated,*/ upload.single('image'), ridersController.doCreate);
-router.get("/riders/:id", /*authMiddleware.isAuthenticated,*/ ridersController.details);
-router.get("/riders/:id/delete", /*authMiddleware.isAuthenticated,*/ ridersController.delete);
-router.get("/riders/:id/update", /*authMiddleware.isAuthenticated,*/ ridersController.update);
-router.post("/riders/:id/update", /*authMiddleware.isAuthenticated,*/ upload.single('image'), ridersController.doUpdate);
+//gallery
+router.get('/riders/:id/gallery', ridersController.gallery);
 
 // comments
+router.get("/comments/:id/delete", authMiddleware.isAuthenticated, commentsController.delete);
+router.post("/comments/:id/create", authMiddleware.isAuthenticated, commentsController.doCreate);
 
-router.get("/comments/:id/delete", /*authMiddleware.isAuthenticated,*/ commentsController.delete);
-router.post("/comments/:id/create", /*authMiddleware.isAuthenticated,*/ commentsController.doCreate);
+
+// likes
+
+router.post("/user/:riderId/like", likesController.doCreate)
+
+
 
 
 //riders/:id/favourite - la ruta

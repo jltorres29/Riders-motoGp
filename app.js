@@ -10,8 +10,10 @@ require("./config/passport.config");
 
 const app = express();
 
-const { isSelected } = require("./helpers");
+const { isSelected, riderIsLikedByUser } = require("./helpers");
+
 hbs.registerHelper("isSelected", isSelected);
+hbs.registerHelper("riderIsLikedByUser", riderIsLikedByUser);
 
 app.use(logger("dev"));
 app.use(express.urlencoded({ extended: true }));

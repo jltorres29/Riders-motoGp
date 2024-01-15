@@ -1,32 +1,95 @@
-<div id="login" class="container col-xxl-4">
-  <h1 class="text-center mt-5 mb-4">{{#if rider}}Update{{else}}Create{{/if}}</h1>
+<div id="login" class="container col-xxl-4" style="background-color: black; padding: 20px; border-radius: 10px;">
   {{#if rider}}
-    <h2 class="text-center mb-4 text-secondary">{{rider.name}}</h2>
+  <h1 class="text-center mt-5 mb-4" style="color: white;">Update</h1>
+  <h2 class="text-center mb-4 text-secondary" style="color: white;">{{rider.name}}</h2>
+  {{else}}
+  <h1 class="text-center mt-5 mb-4" style="color: white;">Create</h1>
   {{/if}}
+  <form class="container-sm mx-auto" style="max-width: 400px;"
+    action="/riders/{{#if rider}}{{rider._id}}/update{{else}}create{{/if}}" method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="name" style="color: #3498DB;" class="form-label">Name</label>
+      <input {{#if rider}}value="{{rider.name}}" {{else}}placeholder="Type name" required{{/if}} type="text" name="name"
+        class="{{#if errors}}is-invalid{{/if}} form-control" id="name" aria-describedby="nameHelp">
+    </div>
+    <div class="mb-3">
+      <label for="flag" style="color: #3498db;" class="form-label">Flag</label>
+      <select name="flag" class="form-select" aria-label="Default select example">
+        {{#each flagEnumValues}}
+        {{#if rider.flag }}
+        <option value="{{rider.flag}}" {{#isSelected selectValue=this dbValue=../rider.flag}}selected{{/isSelected}}>
+          {{this}}
+        </option>
+        {{else}}
+        <option value="{{this}}" {{#isSelected selectValue=this dbValue='Other' }}selected{{/isSelected}}>{{this}}
+        </option>
+        {{/if}}
+        {{/each}}
+      </select>
+    </div>
+    <div class="mb-3 dropdown">
+      <label for="nationality" style="color: #3498DB;" class="form-label">Nationality</label>
+      <input {{#if rider}}value="{{rider.nationality}}" {{else}}placeholder="Type nationality" required{{/if}}
+        type="text" name="nationality" class="{{#if errors}}is-invalid{{/if}} form-control" id="nationality">
+    </div>
+    <div class="mb-3">
+      <label for="bike" style="color: #3498DB;" class="form-label">Bike</label>
+      <input {{#if rider}}value="{{rider.bike}}" {{else}}placeholder="Type bike" {{/if}} type="text" name="bike"
+        class="{{#if errors}}is-invalid{{/if}} form-control" id="bike">
+    </div>
+    <div class="mb-3">
+      <label for="victories" style="color: #3498DB;" class="form-label">Victories</label>
+      <input {{#if rider}}value="{{rider.victories}}" {{else}}placeholder="Victories" {{/if}} type="number"
+        name="victories" class="{{#if errors}}is-invalid{{/if}} form-control" id="victories">
+    </div>
+    <div class="mb-3">
+      <label for="story" style="color: #3498DB;" class="form-label">Story</label>
+      <textarea {{#if rider}}placeholder="{{rider.story}}" {{else}}placeholder="Type story" {{/if}} name="story"
+        class="{{#if errors}}is-invalid{{/if}} form-control" id="story"
+        rows="4">{{#if rider}}{{rider.story}}{{/if}}</textarea>
+    </div>
+    <div class="mb-3">
+      <label for="dateOfBirth" style="color: #3498DB;" class="form-label">Date of Birth</label>
+      <input {{#if rider}} value="{{rider.dateOfBirth}}" {{else}} placeholder="Type date of birth" {{/if}} type="text"
+        name="dateOfBirth" class="{{#if errors}}is-invalid{{/if}} form-control" id="dateOfBirth">
+    </div>
 
-  <form class="container-sm mx-auto" style="max-width: 400px;" action="/riders/{{#if rider}}{{rider._id}}/update{{else}}create{{/if}}" method="POST" enctype="multipart/form-data">
     <div class="mb-3">
-      <label for="name" style="color: #3498db;" class="form-label">Name</label>
-      <input {{#if rider}}value="{{rider.name}}"{{else}}placeholder="Type name" required{{/if}} type="text" name="name" class="{{#if errors}}is-invalid{{/if}} form-control" id="name" aria-describedby="nameHelp">
+      <label for="placeOfBirth" style="color: #3498DB;" class="form-label">Place of Birth</label>
+      <input {{#if rider}}value="{{rider.placeOfBirth}}" {{else}}placeholder="Type place of birth" {{/if}} type="text"
+        name="placeOfBirth" class="{{#if errors}}is-invalid{{/if}} form-control" id="placeOfBirth">
+    </div>
+
+
+    <div class="mb-3">
+      <label for="legend" style="color: #3498DB;" class="form-label">Is legend?</label>
+      <select name="legend" class="form-select" aria-label="Default select example">
+        <option>true</option>
+        <option>false</option>
+      </select>
+    </div>
+
+
+    <div class="mb-3">
+      <label for="image" style="color: #3498DB;" class="form-label">Image</label>
+      <input placeholder="Upload an image" type="file" name="image" class="{{#if errors}}is-invalid{{/if}} form-control"
+        id="image">
     </div>
     <div class="mb-3">
-      <label for="nationality" style="color: #3498db;" class="form-label">Nationality</label>
-      <input {{#if rider}}value="{{rider.nationality}}"{{else}}placeholder="Type nationality" required{{/if}} type="text" name="nationality" class="{{#if errors}}is-invalid{{/if}} form-control" id="nationality">
-    </div>
-    <div class="mb-3">
-      <label for="image" style="color: #3498db;" class="form-label">Image</label>
-      <input placeholder="Upload an image" type="file" name="image" class="{{#if errors}}is-invalid{{/if}} form-control" id="image">
+      <label for="gallery" style="color: #3498DB;" class="form-label">Gallery </label>
+      <input placeholder="Upload an image" type="file" name="gallery"
+        class="{{#if errors}}is-invalid{{/if}} form-control" id="gallery" multiple="multiple">
     </div>
     {{#if errors}}
-      <div class="mb-3">
-        <small class="text-danger">{{errors.msg}}</small>
-      </div>
+    <div class="mb-3">
+      <small class="text-danger">{{errors.msg}}</small>
+    </div>
     {{/if}}
     {{#if rider}}
-      <button type="submit" class="btn btn-success"><i data-feather="edit"></i></button>
-      <a href="/riders/{{rider._id}}" class="btn btn-secondary"><i data-feather="skip-back"></i></a>
+    <button type="submit" class="btn btn-success"><i data-feather="edit-3"></i></button>
+    <a href="/riders/{{rider._id}}" class="btn btn-secondary"><i data-feather="corner-down-left"></i></a>
     {{else}}
-      <button type="submit" class="btn btn-success">Create</button>
+    <button type="submit" class="btn btn-success">Create</button>
     {{/if}}
   </form>
 </div>

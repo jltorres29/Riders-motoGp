@@ -31,7 +31,7 @@ passport.use('google-auth', new GoogleStrategy({
           picture,
           password: new mongoose.Types.ObjectId(),
           googleID: googleID,
-          isActive: true
+          isActive: false
         })
 
         return newUserInstance.save()

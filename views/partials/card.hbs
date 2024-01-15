@@ -1,14 +1,24 @@
-<div class="col">
-  <div class="card h-100">
-    {{!-- <img src="..." class="card-img-top" alt="..."> --}}
-    <div class="card-body">
-   <img class="card-img" src={{image}}/>
-      <h5 class="card-title">{{name}}</h5>
-      <img class="card-flag" src={{flag}} width="20px" height="20px"></img>
-      <p class="card-text">From {{nationality}}</p>
-    </div>
-    <div class="card-footer d-flex justify-content-between">
-      <small class="text-body-secondary"><a href="/riders/{{id}}" class="link-opacity-50-hover">See Details</a></small>
+<div>
+  <div class="card h-100 {{#if rider.legend}}bg-warning{{else}} bg-secondary{{/if}}">
+    <div class="card-body f-flex aling-item-colum ">
+      <div class="container-xxl">
+        <div>
+          <a href="/riders/{{rider.id}}" class="link-opacity-50-hover"><img class="card-img" height="300" width="500"
+              src={{rider.image}} /></a>
+        </div>
+        <div class="cardText mb-1">
+          <h5 class="card-title"><img width="25" src={{rider.flag}} /> {{rider.name}}</h5>
+          {{#if currentUser}}
+          <div class="d-flex justify-content-end">
+            <form action="/user/{{rider._id}}/like" method="POST">
+              <button type="submit"
+                class="btn  {{#riderIsLikedByUser likes=rider.likes userId=currentUser._id}} btn-danger {{else}} btn-info {{/riderIsLikedByUser}}">Likes
+                {{rider.likes.length}}</button>
+            </form>
+          </div>
+          {{/if}}
+        </div>
+      </div>
     </div>
   </div>
 </div>
